@@ -17,6 +17,8 @@ typedef struct s_coder
     int left_dongle;
     int right_dongle;
     int number_of_compiles;
+    long last_compiled;
+    int stop;
     
     pthread_t coder_thread;
     
@@ -32,6 +34,7 @@ typedef struct s_rules
     int time_to_refactor;
     int number_of_compiles_required;
     int dongle_cooldown;
+    long time_start;
     char * scheduler;
     int stop;
 
@@ -42,17 +45,21 @@ typedef struct s_rules
     t_coder *coders;
 } t_rules;
 
+// cleaning
+void cleaning(t_rules *r);
+
+// init
+void coder_init(t_rules *r);
+void rules_init(t_rules *r, char **av);
+
 // parsing
 int check_nb_arguments (int ac);
 int check_positiv_int(char **av);
 int parsing(int ac, char **av);
 int check_last_arg(char **av);
 
-// init
-void coder_init(t_rules *r);
-void rules_init(t_rules *r, char **av);
-
-// cleaning
-void cleaning(t_rules *r);
+// utils
+long get_time(void);
+void print_status(t_coder *coder, char *msg);
 
 #endif

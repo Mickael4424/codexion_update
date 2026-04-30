@@ -11,6 +11,7 @@ void coder_init(t_rules *r)
         r->coders[i].left_dongle = i;
         r->coders[i].right_dongle = (i + 1) % r->number_of_coders;
         r->coders[i].number_of_compiles = 0;
+        r->coders[i].stop = 0;
         r->coders[i].rules = r;
         i++;
     }
