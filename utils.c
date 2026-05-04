@@ -9,12 +9,30 @@ long get_time(void)
 
 void print_status(t_coder *coder, char *msg)
 {
+    pthread_mutex_lock(&coder->rules->print_mutex);
     pthread_mutex_lock(&coder->rules->data_mutex);
     if (!coder->rules->stop)
     {
-        pthread_mutex_lock(&coder->rules->print_mutex);
-        printf("%ld %d %s\n", get_time() - coder->rules->time_start, coder->id, msg);
-        pthread_mutex_unlock(&coder->rules->print_mutex);
+        printf("%ld %d %s\n",
+            get_time() - coder->rules->time_start,
+            coder->id, msg);
     }
     pthread_mutex_unlock(&coder->rules->data_mutex);
+    pthread_mutex_unlock(&coder->rules->print_mutex);
+}
+
+void cleaning(t_rules *r)
+{
+    for (int i = 0; i < r->number_of_coders; i++)
+    {
+        pthread_mutex_destroy(&r->dongles[i].mutex);
+        free(r->dongles[i].queue);
+    }
+    // free malloc dongles et coders
+    free(r->dongles);
+    free(r->coders);
+
+    // destroy mutex
+    pthread_mutex_destroy(&r->data_mutex);
+    pthread_mutex_destroy(&r->print_mutex);
 }
